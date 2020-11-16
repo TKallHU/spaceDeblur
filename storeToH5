@@ -1,0 +1,46 @@
+import argparse
+import glob
+import h5py
+import numpy as np
+import PIL.Image as pil_image
+import cv2 as cv
+
+
+def train(path):
+    # 生成h5文件
+    h5_file = h5py.File(path, 'w')
+    # 模糊
+    lr_group = h5_file.create_group('blur')
+    # 清晰
+    hr_group = h5_file.create_group('sharp')
+
+    patch_idx = 0
+    patch_idx1 = 0
+    # 将清晰小图写入
+    # 从高到低的排序，不是按文件名排序
+    for i, image_path in enumerate(sorted(glob.glob('{}/*'.format(r'D:\demoModCropDataset\train\small\sharp')))):
+        # print('Lujing:',image_path)
+        hr = cv.imread(image_path, cv.IMREAD_GRAYSCALE)  # 已经是numpy类型
+
+        hr_group.create_dataset(str(patch_idx), data=hr)
+        patch_idx += 1
+        print('-------------->'+ str(patch_idx))
+    print('ok')
+    # 将模糊小图写入
+    'D:/dataset/blur_crop/qing_blur_crop'
+    for i, image_path in enumerate(sorted(glob.glob('{}/*'.format(r'D:\demoModCropDataset\train\small\3')))):
+        # print('Lujing:', image_path)
+        lr = cv.imread(image_path, cv.IMREAD_GRAYSCALE)  # 转换成灰度图像
+
+        lr_group.create_dataset(str(patch_idx1), data=lr)
+        patch_idx1 += 1
+        print('___________----------->>>>'+str(patch_idx1))
+    print('ooooooook')
+    h5_file.close()
+
+
+if __name__ == '__main__':
+    # train('D:/dataset/train/trainOne.h5')
+    train(r'D:\demoModCropDataset\train\small\train3.h5')
+
+
